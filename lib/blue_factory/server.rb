@@ -1,22 +1,16 @@
 require 'json'
 require 'sinatra/base'
 
+require_relative 'configuration'
 require_relative 'errors'
 
 module BlueFactory
   class Server < Sinatra::Base
-    FEED_GENERATOR_TYPE = 'app.bsky.feed.generator'
-
-    set :hostname, nil
-    set :publisher_did, nil
-
     configure do
       disable :static
       enable :quiet
       set :default_content_type, 'application/json'
       settings.add_charset << 'application/json'
-
-      @feeds = {}
     end
 
     configure :development do
@@ -24,27 +18,13 @@ module BlueFactory
       disable :quiet
     end
 
-    class << self
-      def add_feed(key, feed_class)
-        @feeds[key.to_s] = feed_class
-      end
-
-      def all_feeds
-        @feeds.keys
-      end
-
-      def get_feed(key)
-        @feeds[key.to_s]
-      end
-
-      def service_did
-        'did:web:' + settings.hostname
-      end
-    end
-
     helpers do
+      def config
+        BlueFactory
+      end
+
       def feed_uri(key)
-        'at://' + settings.publisher_did + '/' + FEED_GENERATOR_TYPE + '/' + key
+        'at://' + config.publisher_did + '/' + FEED_GENERATOR_TYPE + '/' + key
       end
 
       def json(data)
@@ -66,7 +46,7 @@ module BlueFactory
       end
 
       feed_key = params[:feed].split('/').last
-      feed = settings.get_feed(feed_key)
+      feed = config.get_feed(feed_key)
 
       if feed.nil? || feed_uri(feed_key) != params[:feed]
         return json_error("UnsupportedAlgorithm", "Unsupported algorithm")
@@ -86,20 +66,20 @@ module BlueFactory
 
     get '/xrpc/app.bsky.feed.describeFeedGenerator' do
       return json({
-        did: settings.service_did,
-        feeds: settings.all_feeds.map { |f| { uri: feed_uri(f) }}
+        did: config.service_did,
+        feeds: config.all_feeds.map { |f| { uri: feed_uri(f) }}
       })
     end
 
     get '/.well-known/did.json' do
       return json({
         '@context': ['https://www.w3.org/ns/did/v1'],
-        id: settings.service_did,
+        id: config.service_did,
         service: [
           {
             id: '#bsky_fg',
             type: 'BskyFeedGenerator',
-            serviceEndpoint: 'https://' + settings.hostname
+            serviceEndpoint: 'https://' + config.hostname
           }
         ]
       })
