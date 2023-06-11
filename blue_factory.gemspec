@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors = ["Kuba Suder"]
   spec.email = ["jakub.suder@gmail.com"]
 
-  spec.summary = "TODO: Write a short summary, because RubyGems requires one."
-  spec.description = "TODO: Write a longer description or delete this line."
+  spec.summary = "Write a short summary, because RubyGems requires one."
+  spec.description = "Write a longer description or delete this line."
   spec.homepage = "https://github.com/mackuba/blue_factory"
 
   spec.license = "Zlib"
