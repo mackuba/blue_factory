@@ -6,6 +6,8 @@ require_relative 'errors'
 
 module BlueFactory
   class Server < Sinatra::Base
+    AT_URI_REGEXP = %r(^at://did:plc:[a-z0-9]+/app\.bsky\.feed\.post/[a-z0-9]+$)
+
     configure do
       disable :static
       enable :quiet
@@ -34,6 +36,21 @@ module BlueFactory
       def json_error(name, message, status: 400)
         [status, JSON.generate({ error: name, message: message })]
       end
+
+      def validate_response(response)
+        cursor = response[:cursor]
+        raise InvalidResponseError, ":cursor key is missing" unless response.has_key?(:cursor)
+        raise InvalidResponseError, ":cursor should be a string or nil" unless cursor.nil? || cursor.is_a?(String)
+
+        posts = response[:posts]
+        raise InvalidResponseError, ":posts key is missing" unless response.has_key?(:posts)
+        raise InvalidResponseError, ":posts should be an array of strings" unless posts.is_a?(Array)
+        raise InvalidResponseError, ":posts should be an array of strings" unless posts.all? { |x| x.is_a?(String) }
+
+        if bad_uri = posts.detect { |x| x !~ AT_URI_REGEXP }
+          raise InvalidResponseError, "Invalid post URI: #{bad_uri}"
+        end
+      end
     end
 
     get '/xrpc/app.bsky.feed.getFeedSkeleton' do
@@ -54,6 +71,7 @@ module BlueFactory
 
       begin
         response = feed.get_posts(params.slice(:feed, :cursor, :limit))
+        validate_response(response) if config.validate_responses
 
         return json({
           cursor: response[:cursor],
@@ -61,6 +79,8 @@ module BlueFactory
         })
       rescue InvalidRequestError => e
         return json_error(e.error_type || "InvalidRequest", e.message)
+      rescue InvalidResponseError => e
+        return json_error("InvalidResponse", e.message)
       end
     end
 

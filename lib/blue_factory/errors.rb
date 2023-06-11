@@ -7,4 +7,7 @@ module BlueFactory
       @error_type = error_type
     end
   end
+
+  class InvalidResponseError < StandardError
+  end
 end
