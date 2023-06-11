@@ -1,6 +1,4 @@
-require 'sinatra/base'
-
-class BlueFactory < Sinatra::Base
+module BlueFactory
   class InvalidRequestError < StandardError
     attr_reader :error_type
 
