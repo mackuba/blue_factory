@@ -1,5 +1,5 @@
-# frozen_string_literal: true
+require 'sinatra/base'
 
-module BlueFactory
+class BlueFactory < Sinatra::Base
   VERSION = "0.0.1"
 end
