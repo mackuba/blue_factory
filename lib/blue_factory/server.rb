@@ -11,13 +11,9 @@ module BlueFactory
     configure do
       disable :static
       enable :quiet
+      enable :logging
       set :default_content_type, 'application/json'
       settings.add_charset << 'application/json'
-    end
-
-    configure :development do
-      enable :logging
-      disable :quiet
     end
 
     helpers do
