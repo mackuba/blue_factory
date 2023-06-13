@@ -8,9 +8,15 @@ Gem::Specification.new do |spec|
   spec.authors = ["Kuba Suder"]
   spec.email = ["jakub.suder@gmail.com"]
 
-  spec.summary = "Write a short summary, because RubyGems requires one."
-  spec.description = "Write a longer description or delete this line."
+  spec.summary = "A Ruby gem for hosting custom feeds for Bluesky"
   spec.homepage = "https://github.com/mackuba/blue_factory"
+
+  spec.description = %(
+    BlueFactory is a Ruby library which helps you build a web service that hosts custom feeds a.k.a. feed generators
+    for the Bluesky social network. It implements a simple HTTP server based on Sinatra which provides the required
+    endpoints for the feed generator interface. You need to provide the content for the feed by making a query to your
+    preferred local database.
+  )
 
   spec.license = "Zlib"
   spec.required_ruby_version = ">= 2.6.0"
