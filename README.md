@@ -132,6 +132,36 @@ For example, you can change the port used in development with:
 BlueFactory::Server.set :port, 7777
 ```
 
+You can also add additional routes, e.g. to make a redirect or print something on the root URL:
+
+```rb
+BlueFactory::Server.get '/' do
+  redirect 'https://github.com/mackuba/blue_factory'
+end
+```
+
+
+## Publishing the feed
+
+When your feed server is ready and deployed to the production server, you can use the included `bluesky:publish` Rake task to upload the feed configuration to the Bluesky network. To do that, add this line to your `Rakefile`:
+
+```rb
+require 'blue_factory/rake'
+```
+
+You also need to load your `BlueFactory` configuration and your feed classes here, so it's recommended that you extract this configuration code to some kind of init file that can be included in the `Rakefile`, `config.ru` and elsewhere if needed.
+
+To publish the feed, you will need to provide some additional info about the feed, like its public name, through a few more methods in the feed object (the same one that responds to `#get_posts`):
+
+- `display_name` (required) - the publicly visible name of your feed, e.g. "WWDC 23" (should be something short)
+- `description` (optional) - a longer (~1-2 lines) description of what the feed does, displayed on the feed page as the "bio"
+- `avatar_file` (optional) - path to an avatar image from the project's root (PNG or JPG)
+
+When you're ready, run the rake task passing the feed key (you will be asked for the uploader account's password):
+
+```
+bundle exec rake bluesky:publish KEY=wwdc
+```
 
 ## Credits
 
