@@ -43,7 +43,7 @@ namespace :bluesky do
     if feed.respond_to?(:avatar_file) && feed.avatar_file.to_s.strip != ''
       avatar_file = feed.avatar_file
 
-      if !File.exist?
+      if !File.exist?(avatar_file)
         puts "Avatar file #{avatar_file} not found."
         exit 1
       end
@@ -72,12 +72,21 @@ namespace :bluesky do
 
     access_token = json['accessJwt']
 
+    if avatar_data
+      json = BlueFactory::Net.post_request(server, 'com.atproto.repo.uploadBlob', avatar_data,
+        content_type: encoding, auth: access_token)
+
+      avatar_ref = json['blob']
+    end
+
     record = {
       did: BlueFactory.service_did,
       displayName: feed_display_name,
       description: feed_description,
       createdAt: Time.now.iso8601,
     }
+
+    record[:avatar] = avatar_ref if avatar_ref
 
     json = BlueFactory::Net.post_request(server, 'com.atproto.repo.putRecord', {
       repo: BlueFactory.publisher_did,

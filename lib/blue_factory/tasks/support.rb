@@ -12,8 +12,6 @@ module BlueFactory
 
       body = data.is_a?(String) ? data : data.to_json
 
-      puts body unless data.is_a?(String)
-
       response = ::Net::HTTP.post(URI("#{server}/xrpc/#{method}"), body, headers)
       raise ResponseError, "Invalid response: #{response.code} #{response.body}" if response.code.to_i / 100 != 2
 
