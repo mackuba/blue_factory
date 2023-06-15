@@ -9,12 +9,16 @@ module BlueFactory
       @feeds[key.to_s] = feed_class
     end
 
-    def all_feeds
+    def feed_keys
       @feeds.keys
     end
 
     def get_feed(key)
       @feeds[key.to_s]
+    end
+
+    def all_feeds
+      @feeds.values
     end
 
     private

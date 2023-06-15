@@ -83,7 +83,7 @@ module BlueFactory
     get '/xrpc/app.bsky.feed.describeFeedGenerator' do
       return json({
         did: config.service_did,
-        feeds: config.all_feeds.map { |f| { uri: feed_uri(f) }}
+        feeds: config.feed_keys.map { |f| { uri: feed_uri(f) }}
       })
     end
 
