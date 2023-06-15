@@ -22,7 +22,7 @@ The server is configured through the `BlueFactory` module. The two required sett
 - `publisher_did` - DID identifier of the account that you will publish the feed on (the string that starts with `did:plc:...`)
 - `hostname` - the hostname on which the feed service will be run
 
-You also need to configure at least one feed by passing a feed key and a feed object. The key is the identifier that will appear at the end of the feed URI - ideally something short and lowercase. The object is anything that implements the single required method `get_posts` (could be a class, a module or an instance).
+You also need to configure at least one feed by passing a feed key and a feed object. The key is the identifier that will appear at the end of the feed URI - it must only contain characters that are valid in URLs (preferably all lowercase) and it can't be longer than 15 characters. The object is anything that implements the single required method `get_posts` (could be a class, a module or an instance).
 
 So a simple setup could look like this:
 

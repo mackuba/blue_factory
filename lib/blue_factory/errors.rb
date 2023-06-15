@@ -1,4 +1,7 @@
 module BlueFactory
+  class InvalidKeyError < StandardError
+  end
+
   class InvalidRequestError < StandardError
     attr_reader :error_type
 
