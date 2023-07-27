@@ -69,10 +69,11 @@ module BlueFactory
         response = feed.get_posts(params.slice(:feed, :cursor, :limit))
         validate_response(response) if config.validate_responses
 
-        return json({
-          cursor: response[:cursor],
-          feed: response[:posts].map { |s| { post: s }}
-        })
+        output = {}
+        output[:feed] = response[:posts].map { |s| { post: s }}
+        output[:cursor] = response[:cursor] if response[:cursor]
+
+        return json(output)
       rescue InvalidRequestError => e
         return json_error(e.error_type || "InvalidRequest", e.message)
       rescue InvalidResponseError => e
