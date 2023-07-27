@@ -1,3 +1,7 @@
+## [0.1.3] - 2023-07-27
+
+- fixed incorrect response when reaching the end of the feed
+
 ## [0.1.2] - 2023-06-15
 
 - added validation for feed rkey
