@@ -33,6 +33,25 @@ module BlueFactory
         [status, JSON.generate({ error: name, message: message })]
       end
 
+      def get_feed
+        if params[:feed].to_s.empty?
+          raise InvalidResponseError, "Error: Params must have the property \"feed\""
+        end
+
+        if params[:feed] !~ %r(^at://[\w\-\.\:]+/[\w\.]+/[\w\.\-]+$)
+          raise InvalidResponseError, "Error: feed must be a valid at-uri"
+        end
+
+        feed_key = params[:feed].split('/').last
+        feed = config.get_feed(feed_key)
+
+        if feed.nil? || feed_uri(feed_key) != params[:feed]
+          raise UnsupportedAlgorithmError, "Unsupported algorithm"
+        end
+
+        feed
+      end
+
       def validate_response(response)
         cursor = response[:cursor]
         raise InvalidResponseError, ":cursor key is missing" unless response.has_key?(:cursor)
@@ -50,22 +69,8 @@ module BlueFactory
     end
 
     get '/xrpc/app.bsky.feed.getFeedSkeleton' do
-      if params[:feed].to_s.empty?
-        return json_error("InvalidRequest", "Error: Params must have the property \"feed\"")
-      end
-
-      if params[:feed] !~ %r(^at://[\w\-\.\:]+/[\w\.]+/[\w\.\-]+$)
-        return json_error("InvalidRequest", "Error: feed must be a valid at-uri")
-      end
-
-      feed_key = params[:feed].split('/').last
-      feed = config.get_feed(feed_key)
-
-      if feed.nil? || feed_uri(feed_key) != params[:feed]
-        return json_error("UnsupportedAlgorithm", "Unsupported algorithm")
-      end
-
       begin
+        feed = get_feed
         response = feed.get_posts(params.slice(:feed, :cursor, :limit))
         validate_response(response) if config.validate_responses
 
@@ -76,6 +81,8 @@ module BlueFactory
         return json(output)
       rescue InvalidRequestError => e
         return json_error(e.error_type || "InvalidRequest", e.message)
+      rescue UnsupportedAlgorithmError => e
+        return json_error("UnsupportedAlgorithm", e.message)
       rescue InvalidResponseError => e
         return json_error("InvalidResponse", e.message)
       end
