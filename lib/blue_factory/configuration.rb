@@ -13,7 +13,7 @@ module BlueFactory
     (ENV['APP_ENV'] || ENV['RACK_ENV'] || :development).to_sym
   end
 
-  configurable :publisher_did, :hostname, :validate_responses
+  configurable :publisher_did, :hostname, :validate_responses, :enable_unsafe_auth
 
   set :validate_responses, (environment != :production)
 end
