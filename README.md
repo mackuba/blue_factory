@@ -40,7 +40,8 @@ BlueFactory.add_feed 'starwars', StarWarsFeed.new
 
 The `get_posts` method of the feed object should:
 
-- accept a single `params` argument which is a hash with fields: `:feed`, `:cursor` and `:limit` (the last two are optional)
+- accept a `params` argument which is a hash with fields: `:feed`, `:cursor` and `:limit` (the last two are optional)
+- optionally, accept a second `current_user` argument which is a string with the authenticated user's DID (depends on authentication config - [see below](#authentication))
 - return a hash with two fields: `:cursor` and `:posts`
 
 The `:feed` is the `at://` URI of the feed. The `:cursor` param, if included, should be a cursor returned by your feed from one of the previous requests, so it should be in the format used by the same function - but anyone can call the endpoint with any params, so you should validate it. The cursor is used for pagination to provide more pages further down in the feed (the first request to load the top of the feed doesn't include a cursor).
@@ -59,7 +60,7 @@ An example implementation could look like this:
 require 'time'
 
 class StarWarsFeed
-  def get_posts(params)
+  def get_posts(params, current_user = nil)
     limit = check_query_limit(params)
     query = Post.select('uri, time').order('time DESC').limit(limit)
 
@@ -122,7 +123,54 @@ server {
 }
 ```
 
-### Additional configuration & customizing
+## Authentication
+
+Feeds are authenticated using [JSON Web Tokens](https://jwt.io). When a user opens, refreshes or scrolls down a feed in their app, a request is made to the feed service from the Bluesky network's IP address with user's authentication token in the `Authorization` HTTP header.
+
+At the moment, Blue Factory handles authentication in a very simplified way - it extracts the user's DID from the authentication header, but it does not verify the signature. This means that anyone can trivially prepare a fake token and make requests to the `getFeedSkeleton` endpoint as a different user.
+
+As such, this authentication should not be used for anything critical. It may be used for things like logging, analytics, or as "security by obscurity" to just discourage others from accessing the feed in the app.
+
+To use this simple authentication, set the `enable_unsafe_auth` option:
+
+```rb
+BlueFactory.set :enable_unsafe_auth, true
+```
+
+The user's DID extracted from the token is passed as a second argument to `#get_posts`. You may, for example, return an empty list when the user is not authorized to use it:
+
+```rb
+class HiddenFeed
+  def get_posts(params, current_user)
+    if AUTHORIZED_USERS.include?(current_user)
+      # ...
+    else
+      { posts: [] }
+    end
+  end
+end
+```
+
+Alternatively, you can raise a `BlueFactory::AuthorizationError` with an optional custom message. This will return a 401 status response to the Bluesky app, which will make it display the pink error banner in the app:
+
+```rb
+class HiddenFeed
+  def get_posts(params, current_user)
+    if AUTHORIZED_USERS.include?(current_user)
+      # ...
+    else
+      raise BlueFactory::AuthorizationError, "You shall not pass!"
+    end
+  end
+end
+```
+
+<p><img width="400" src="https://github.com/mackuba/blue_factory/assets/28465/9197c0ec-9302-4ca0-b06c-3fce2e0fa4f4"></p>
+
+Note: the `current_user` may be `nil` if the authentication header is not set at all (which may happen if you access the endpoint e.g. with `curl` or in a browser).
+
+
+## Additional configuration & customizing
 
 You can use the [Sinatra API](https://sinatrarb.com/intro.html#configuration) to do any additional configuration, like changing the server port, enabling/disabling logging and so on.
 
