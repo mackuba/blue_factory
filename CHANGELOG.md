@@ -1,3 +1,7 @@
+## [0.1.4] - 2023-08-19
+
+- implemented partial authentication, without signature verification (`enable_unsafe_auth` option)
+
 ## [0.1.3] - 2023-07-27
 
 - fixed incorrect response when reaching the end of the feed
