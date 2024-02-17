@@ -13,7 +13,6 @@ module BlueFactory
       disable :static
       enable :quiet
       enable :logging
-      set :default_content_type, 'application/json'
       settings.add_charset << 'application/json'
     end
 
@@ -26,11 +25,15 @@ module BlueFactory
         'at://' + config.publisher_did + '/' + FEED_GENERATOR_TYPE + '/' + key
       end
 
-      def json(data)
+      def json_response(data)
+        content_type :json
         JSON.generate(data)
       end
 
+      alias json json_response
+
       def json_error(name, message, status: 400)
+        content_type :json
         [status, JSON.generate({ error: name, message: message })]
       end
 
@@ -110,7 +113,7 @@ module BlueFactory
         output[:feed] = response[:posts].map { |s| { post: s }}
         output[:cursor] = response[:cursor] if response[:cursor]
 
-        return json(output)
+        return json_response(output)
       rescue InvalidRequestError => e
         return json_error(e.error_type || "InvalidRequest", e.message)
       rescue AuthorizationError => e
@@ -123,14 +126,14 @@ module BlueFactory
     end
 
     get '/xrpc/app.bsky.feed.describeFeedGenerator' do
-      return json({
+      return json_response({
         did: config.service_did,
         feeds: config.feed_keys.map { |f| { uri: feed_uri(f) }}
       })
     end
 
     get '/.well-known/did.json' do
-      return json({
+      return json_response({
         '@context': ['https://www.w3.org/ns/did/v1'],
         id: config.service_did,
         service: [
