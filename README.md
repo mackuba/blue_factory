@@ -125,11 +125,11 @@ server {
 
 ## Authentication
 
-Feeds are authenticated using [JSON Web Tokens](https://jwt.io). When a user opens, refreshes or scrolls down a feed in their app, a request is made to the feed service from the Bluesky network's IP address with user's authentication token in the `Authorization` HTTP header.
+Feeds are authenticated using a technology called [JSON Web Tokens](https://jwt.io). If a user is logged in, when they open, refresh or scroll down a feed in their app, requests are made to the feed service from the Bluesky network's IP address with user's authentication token in the `Authorization` HTTP header. (This is not the same kind of token as the access token that you use to make API calls - it does not let you perform any actions on user's behalf.)
 
-At the moment, Blue Factory handles authentication in a very simplified way - it extracts the user's DID from the authentication header, but it does not verify the signature. This means that anyone can trivially prepare a fake token and make requests to the `getFeedSkeleton` endpoint as a different user.
+At the moment, Blue Factory handles authentication in a very simplified way - it extracts the user's DID from the authentication header, but it does not verify the signature. This means that anyone with some programming knowledge can trivially prepare a fake token and make requests to the `getFeedSkeleton` endpoint as a different user.
 
-As such, this authentication should not be used for anything critical. It may be used for things like logging, analytics, or as "security by obscurity" to just discourage others from accessing the feed in the app.
+As such, this authentication should not be used for anything critical. It may be used for things like logging, analytics, or as "security by obscurity" to just discourage others from accessing the feed in the app. You can also use this to build personalized feeds, as long as it's not a problem that the user DID may be fake.
 
 To use this simple authentication, set the `enable_unsafe_auth` option:
 
@@ -167,7 +167,24 @@ end
 
 <p><img width="400" src="https://github.com/mackuba/blue_factory/assets/28465/9197c0ec-9302-4ca0-b06c-3fce2e0fa4f4"></p>
 
-Note: the `current_user` may be `nil` if the authentication header is not set at all (which may happen if you access the endpoint e.g. with `curl` or in a browser).
+
+### Unauthenticated access
+
+Please note that the `current_user` may be nil - this will happen if the authentication header is not set at all. Since the [bsky.app](https://bsky.app) website is now open to the public and can be accessed without authentication, people can also access your feeds without being logged in.
+
+If you want the feed to only be available to logged in users (even if it's a non-personalized feed), simply raise an `AuthorizationError` if `current_user` is nil:
+
+```rb
+class RestrictedFeed
+  def get_posts(params, current_user)
+    if current_user.nil?
+      raise BlueFactory::AuthorizationError, "Log in to see this feed"
+    end
+
+    # ...
+  end
+end
+```
 
 
 ## Additional configuration & customizing
