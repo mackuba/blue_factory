@@ -1,6 +1,9 @@
 # BlueFactory 🏭
 
-A Ruby gem for hosting custom feeds for Bluesky
+A Ruby gem for hosting custom feeds for Bluesky.
+
+> [!NOTE]
+> ATProto Ruby gems collection: [skyfall](https://github.com/mackuba/skyfall) | [blue_factory](https://github.com/mackuba/blue_factory) | [minisky](https://github.com/mackuba/minisky) | [didkit](https://github.com/mackuba/didkit)
 
 
 ## What does it do
