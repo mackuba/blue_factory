@@ -224,6 +224,7 @@ To publish the feed, you will need to provide some additional info about the fee
 - `display_name` (required) - the publicly visible name of your feed, e.g. "WWDC 23" (should be something short)
 - `description` (optional) - a longer (~1-2 lines) description of what the feed does, displayed on the feed page as the "bio"
 - `avatar_file` (optional) - path to an avatar image from the project's root (PNG or JPG)
+- `content_mode` (optional) - return `:video` to create a video feed
 
 When you're ready, run the rake task passing the feed key (you will be asked for the uploader account's password):
 

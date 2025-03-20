@@ -40,6 +40,18 @@ namespace :bluesky do
       feed_description = feed.description
     end
 
+    if feed.respond_to?(:content_mode)
+      case feed.content_mode
+      when nil, :unspecified
+        feed_content_mode = "app.bsky.feed.defs#contentModeUnspecified"
+      when :video
+        feed_content_mode = "app.bsky.feed.defs#contentModeVideo"
+      else
+        puts "Invalid content mode: #{feed.content_mode.inspect}. Accepted values: :video, :unspecified, nil."
+        exit 1
+      end
+    end
+
     if feed.respond_to?(:avatar_file) && feed.avatar_file.to_s.strip != ''
       avatar_file = feed.avatar_file
 
@@ -87,6 +99,7 @@ namespace :bluesky do
     }
 
     record[:avatar] = avatar_ref if avatar_ref
+    record[:contentMode] = feed_content_mode if feed_content_mode
 
     json = BlueFactory::Net.post_request(server, 'com.atproto.repo.putRecord', {
       repo: BlueFactory.publisher_did,
