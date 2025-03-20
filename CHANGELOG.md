@@ -1,3 +1,7 @@
+## [0.1.5] - 2025-03-20
+
+- added support for feed content mode field (video feeds)
+
 ## [0.1.4] - 2023-08-19
 
 - implemented partial authentication, without signature verification (`enable_unsafe_auth` option)
