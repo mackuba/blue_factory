@@ -232,8 +232,6 @@ When you're ready, run the rake task passing the feed key (you will be asked for
 bundle exec rake bluesky:publish KEY=wwdc
 ```
 
-For non-Bluesky PDSes, you need to also add an env var `SERVER_URL=https://your.pds.host`.
-
 
 ## Credits
 
