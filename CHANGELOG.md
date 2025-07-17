@@ -1,3 +1,7 @@
+## [0.1.6] - 2025-07-17
+
+- detect PDS hostname automatically in the `bluesky:publish` Rake task
+
 ## [0.1.5] - 2025-03-20
 
 - added support for feed content mode field (video feeds)
