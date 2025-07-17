@@ -22,6 +22,8 @@ namespace :bluesky do
       exit 1
     end
 
+    publisher_did = BlueFactory.publisher_did
+
     feed = BlueFactory.get_feed(feed_key)
 
     if feed.nil?
@@ -71,21 +73,29 @@ namespace :bluesky do
       avatar_data = File.read(avatar_file)
     end
 
-    server = ENV['SERVER_URL'] || "https://bsky.social"
+    did_url = if publisher_did.start_with?('did:plc:')
+      "https://plc.directory/#{publisher_did}"
+    else
+      web_domain = did.gsub(/^did\:web\:/, '')
+      "https://#{web_domain}/.well-known/did.json"
+    end
 
-    print "Enter password for your publisher account (#{BlueFactory.publisher_did}): "
+    did_json = BlueFactory::Net.get_request(did_url)
+    pds_host = did_json['service'].detect { |x| x['id'] == '#atproto_pds' }['serviceEndpoint']
+
+    print "Enter password for your publisher account (#{publisher_did}): "
     password = STDIN.noecho(&:gets).chomp
     puts
 
-    json = BlueFactory::Net.post_request(server, 'com.atproto.server.createSession', {
-      identifier: BlueFactory.publisher_did,
+    json = BlueFactory::Net.post_request(pds_host, 'com.atproto.server.createSession', {
+      identifier: publisher_did,
       password: password
     })
 
     access_token = json['accessJwt']
 
     if avatar_data
-      json = BlueFactory::Net.post_request(server, 'com.atproto.repo.uploadBlob', avatar_data,
+      json = BlueFactory::Net.post_request(pds_host, 'com.atproto.repo.uploadBlob', avatar_data,
         content_type: encoding, auth: access_token)
 
       avatar_ref = json['blob']
@@ -101,8 +111,8 @@ namespace :bluesky do
     record[:avatar] = avatar_ref if avatar_ref
     record[:contentMode] = feed_content_mode if feed_content_mode
 
-    json = BlueFactory::Net.post_request(server, 'com.atproto.repo.putRecord', {
-      repo: BlueFactory.publisher_did,
+    json = BlueFactory::Net.post_request(pds_host, 'com.atproto.repo.putRecord', {
+      repo: publisher_did,
       collection: BlueFactory::FEED_GENERATOR_TYPE,
       rkey: feed_key,
       record: record
