@@ -14,7 +14,7 @@ module BlueFactory
       if @properties.include?(property.to_sym)
         self.instance_variable_set("@#{property}", value)
       else
-        raise NoMethodError
+        raise NoMethodError, "No such property: #{property}"
       end
     end
 
