@@ -23,6 +23,9 @@ module BlueFactory
   class InvalidResponseError < StandardError
   end
 
+  class InvalidFeedClassError < StandardError
+  end
+
   class UnsupportedAlgorithmError < StandardError
   end
 end

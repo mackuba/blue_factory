@@ -75,10 +75,18 @@ module BlueFactory
     get '/xrpc/app.bsky.feed.getFeedSkeleton' do
       begin
         feed = get_feed
+        get_posts = feed.method(:get_posts)
         args = params.slice(:feed, :cursor, :limit)
-        context = RequestContext.new(request)
 
-        response = feed.get_posts(args, context)
+        if get_posts.arity == 1
+          response = feed.get_posts(args)
+        elsif get_posts.arity == 2
+          context = RequestContext.new(request)
+          response = feed.get_posts(args, context)
+        else
+          raise InvalidFeedClassError, "get_posts method has invalid API (arity #{get_posts.arity})"
+        end
+
         validate_response(response) if config.validate_responses
 
         output = {}
