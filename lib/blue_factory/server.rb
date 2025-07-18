@@ -1,9 +1,9 @@
-require 'base64'
 require 'json'
 require 'sinatra/base'
 
 require_relative 'configuration'
 require_relative 'errors'
+require_relative 'request_context'
 
 module BlueFactory
   class Server < Sinatra::Base
@@ -56,29 +56,6 @@ module BlueFactory
         feed
       end
 
-      def parse_did_from_token
-        auth = env['HTTP_AUTHORIZATION']
-
-        if auth.to_s.strip.empty?
-          return nil
-        end
-
-        if !auth.start_with?('Bearer ')
-          raise AuthorizationError, "Unsupported authorization method"
-        end
-
-        token = auth.gsub(/^Bearer /, '')
-        parts = token.split('.')
-        raise AuthorizationError.new("Invalid JWT format", "BadJwt") unless parts.length == 3
-
-        begin
-          payload = JSON.parse(Base64.decode64(parts[1]))
-          payload['iss']
-        rescue StandardError => e
-          raise AuthorizationError.new("Invalid JWT format", "BadJwt")
-        end
-      end
-
       def validate_response(response)
         cursor = response[:cursor]
         raise InvalidResponseError, ":cursor key is missing" unless response.has_key?(:cursor)
@@ -99,14 +76,9 @@ module BlueFactory
       begin
         feed = get_feed
         args = params.slice(:feed, :cursor, :limit)
+        context = RequestContext.new(request)
 
-        if config.enable_unsafe_auth
-          did = parse_did_from_token
-          response = feed.get_posts(args, did)
-        else
-          response = feed.get_posts(args)
-        end
-
+        response = feed.get_posts(args, context)
         validate_response(response) if config.validate_responses
 
         output = {}
