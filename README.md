@@ -222,7 +222,7 @@ You also need to load your `BlueFactory` configuration and your feed classes her
 To publish the feed, you will need to provide some additional info about the feed, like its public name, through a few more methods in the feed object (the same one that responds to `#get_posts`):
 
 - `display_name` (required) - the publicly visible name of your feed, e.g. "WWDC 23" (should be something short)
-- `description` (optional) - a longer (~1-2 lines) description of what the feed does, displayed on the feed page as the "bio"
+- `description` (required) - a longer (~1-2 lines) description of what the feed does, displayed on the feed page as the "bio"
 - `avatar_file` (optional) - path to an avatar image from the project's root (PNG or JPG)
 - `content_mode` (optional) - return `:video` to create a video feed
 
