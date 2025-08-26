@@ -95,6 +95,7 @@ module BlueFactory
         output = {}
         output[:feed] = response[:posts].map { |s| { post: s }}
         output[:cursor] = response[:cursor] if response[:cursor]
+        output[:reqId] = response[:req_id] if response[:req_id]
 
         return json_response(output)
       rescue InvalidRequestError => e
