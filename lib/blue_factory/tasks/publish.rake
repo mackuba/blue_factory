@@ -110,6 +110,7 @@ namespace :bluesky do
 
     record[:avatar] = avatar_ref if avatar_ref
     record[:contentMode] = feed_content_mode if feed_content_mode
+    record[:acceptsInteractions] = true if feed.respond_to?(:accepts_interactions) && feed.accepts_interactions
 
     json = BlueFactory::Net.post_request(pds_host, 'com.atproto.repo.putRecord', {
       repo: publisher_did,
