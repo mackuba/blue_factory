@@ -3,6 +3,7 @@ require 'sinatra/base'
 
 require_relative 'configuration'
 require_relative 'errors'
+require_relative 'interaction'
 require_relative 'request_context'
 
 module BlueFactory
@@ -128,6 +129,17 @@ module BlueFactory
           }
         ]
       })
+    end
+
+    post '/xrpc/app.bsky.feed.sendInteractions' do
+      if config.interactions_handler
+        json = JSON.parse(request.body.read)
+        interactions = json['interactions'].map { |x| Interaction.new(x) }
+        config.interactions_handler.call(interactions)
+        status 200
+      else
+        json_error('MethodNotImplemented', 'Method Not Implemented', status: 501)
+      end
     end
   end
 end

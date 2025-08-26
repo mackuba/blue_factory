@@ -1,9 +1,11 @@
 require_relative 'modules/configurable'
+require_relative 'modules/interactions'
 require_relative 'modules/feeds'
 
 module BlueFactory
   extend Configurable
   extend Feeds
+  extend Interactions
 
   def self.service_did
     'did:web:' + hostname
