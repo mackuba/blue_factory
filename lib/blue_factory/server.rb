@@ -111,14 +111,14 @@ module BlueFactory
     end
 
     get '/xrpc/app.bsky.feed.describeFeedGenerator' do
-      return json_response({
+      json_response({
         did: config.service_did,
         feeds: config.feed_keys.map { |f| { uri: feed_uri(f) }}
       })
     end
 
     get '/.well-known/did.json' do
-      return json_response({
+      json_response({
         '@context': ['https://www.w3.org/ns/did/v1'],
         id: config.service_did,
         service: [
@@ -135,7 +135,9 @@ module BlueFactory
       if config.interactions_handler
         json = JSON.parse(request.body.read)
         interactions = json['interactions'].map { |x| Interaction.new(x) }
-        config.interactions_handler.call(interactions)
+        context = RequestContext.new(request)
+
+        config.interactions_handler.call(interactions, context)
         status 200
       else
         json_error('MethodNotImplemented', 'Method Not Implemented', status: 501)
