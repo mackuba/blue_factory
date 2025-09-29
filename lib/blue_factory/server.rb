@@ -64,11 +64,50 @@ module BlueFactory
 
         posts = response[:posts]
         raise InvalidResponseError, ":posts key is missing" unless response.has_key?(:posts)
-        raise InvalidResponseError, ":posts should be an array of strings" unless posts.is_a?(Array)
-        raise InvalidResponseError, ":posts should be an array of strings" unless posts.all? { |x| x.is_a?(String) }
+        raise InvalidResponseError, ":posts should be an array" unless posts.is_a?(Array)
+        # raise InvalidResponseError, ":posts should be an array of strings" unless posts.all? { |x| x.is_a?(String) }
+        #
+        # if bad_uri = posts.detect { |x| x !~ AT_URI_REGEXP }
+        #   raise InvalidResponseError, "Invalid post URI: #{bad_uri}"
+        # end
+      end
 
-        if bad_uri = posts.detect { |x| x !~ AT_URI_REGEXP }
-          raise InvalidResponseError, "Invalid post URI: #{bad_uri}"
+      def process_post_object(object)
+        if object.is_a?(String)
+          return { post: object }
+        end
+
+        post = {}
+
+        if object[:post]
+          post[:post] = object[:post]
+        else
+          raise InvalidResponseError, "post hash is missing a :post key"
+        end
+
+        if object[:reason]
+          post[:reason] = process_post_reason(object[:reason])
+        end
+
+        if object[:context]
+          post[:feedContext] = object[:context]
+        end
+
+        post
+      end
+
+      def process_post_reason(reason)
+        if reason[:repost]
+          {
+            "$type" => "app.bsky.feed.defs#skeletonReasonRepost",
+            "repost" => reason[:repost]
+          }
+        elsif reason[:pin]
+          {
+            "$type" => "app.bsky.feed.defs#skeletonReasonPin"
+          }
+        else
+          raise InvalidResponseError, "invalid post reason: #{reason.inspect}"
         end
       end
     end
@@ -94,7 +133,7 @@ module BlueFactory
         validate_response(response) if config.validate_responses
 
         output = {}
-        output[:feed] = response[:posts].map { |s| { post: s }}
+        output[:feed] = response[:posts].map { |x| process_post_object(x) }
         output[:cursor] = response[:cursor] if response[:cursor]
         output[:reqId] = response[:req_id] if response[:req_id]
 
