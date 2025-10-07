@@ -1,6 +1,11 @@
 module BlueFactory
   class Interaction
     EVENTS = {
+      'app.bsky.feed.defs#interactionLike' => :like,
+      'app.bsky.feed.defs#interactionQuote' => :quote,
+      'app.bsky.feed.defs#interactionReply' => :reply,
+      'app.bsky.feed.defs#interactionRepost' => :repost,
+      'app.bsky.feed.defs#interactionSeen' => :seen,
       'app.bsky.feed.defs#requestLess' => :request_less,
       'app.bsky.feed.defs#requestMore' => :request_more
     }
