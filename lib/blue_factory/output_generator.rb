@@ -12,13 +12,11 @@ class OutputGenerator
     output[:feed] = response[:posts].map { |x| process_post_element(x) }
 
     if cursor = response[:cursor]
-      raise InvalidResponseError, ":cursor should be a string or nil" unless cursor.is_a?(String)
-      output[:cursor] = cursor
+      output[:cursor] = cursor.to_s
     end
 
     if req_id = response[:req_id]
-      raise InvalidResponseError, ":req_id should be a string or nil" unless req_id.is_a?(String)
-      output[:reqId] = req_id
+      output[:reqId] = req_id.to_s
     end
 
     output
@@ -50,8 +48,7 @@ class OutputGenerator
     end
 
     if object[:context]
-      raise InvalidResponseError, ":context should be a string or nil" unless object[:context].is_a?(String)
-      post[:feedContext] = object[:context]
+      post[:feedContext] = object[:context].to_s
     end
 
     post
