@@ -9,8 +9,6 @@ require_relative 'request_context'
 
 module BlueFactory
   class Server < Sinatra::Base
-    AT_URI_REGEXP = %r(^at://did:plc:[a-z0-9]+/app\.bsky\.feed\.post/[a-z0-9]+$)
-
     configure do
       disable :static
       enable :quiet
@@ -77,10 +75,8 @@ module BlueFactory
           raise InvalidFeedClassError, "get_posts method has invalid API (arity #{get_posts.arity})"
         end
 
-        generator = OutputGenerator.new
-        generator.validate_response(response) if config.validate_responses
-
-        return json_response(generator.generate(response))
+        json = OutputGenerator.new.generate(response)
+        return json_response(json)
       rescue InvalidRequestError => e
         return json_error(e.error_type || "InvalidRequest", e.message)
       rescue AuthorizationError => e
@@ -88,7 +84,12 @@ module BlueFactory
       rescue UnsupportedAlgorithmError => e
         return json_error("UnsupportedAlgorithm", e.message)
       rescue InvalidResponseError => e
-        return json_error("InvalidResponse", e.message)
+        if settings.development?
+          return json_error("InvalidResponse", e.message, status: 500)
+        else
+          request.logger&.<< "#{e.class}: #{e.message}\n"
+          return json_error("InvalidResponse", "Feed response was invalid", status: 500)
+        end
       end
     end
 
