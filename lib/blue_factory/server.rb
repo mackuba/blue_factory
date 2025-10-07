@@ -39,11 +39,11 @@ module BlueFactory
 
       def get_feed(feed_uri)
         if feed_uri.to_s.empty?
-          raise InvalidResponseError, "Error: Params must have the property \"feed\""
+          raise InvalidRequestError, "Error: Params must have the property \"feed\""
         end
 
         if feed_uri !~ %r(^at://[\w\-\.\:]+/[\w\.]+/[\w\.\-]+$)
-          raise InvalidResponseError, "Error: feed must be a valid at-uri"
+          raise InvalidRequestError, "Error: feed must be a valid at-uri"
         end
 
         feed_key = feed_uri.split('/').last
