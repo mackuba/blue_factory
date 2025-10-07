@@ -17,8 +17,6 @@ module BlueFactory
 
   configurable :publisher_did, :hostname, :validate_responses, :enable_unsafe_auth
 
-  set :validate_responses, (environment != :production)
-
   def self.set(property, value)
     if property.to_sym == :enable_unsafe_auth
       puts "==="
@@ -26,6 +24,11 @@ module BlueFactory
       puts "Switch to get_posts(args, context) instead and get the user DID from: context.user.raw_did."
       puts "==="
       @enable_unsafe_auth = value
+    elsif property.to_sym == :validate_responses
+      puts "==="
+      puts "WARNING: option :validate_responses is deprecated and will be removed in version 0.3. " +
+        "Responses are now always validated, also in production."
+      puts "==="
     else
       super
     end
