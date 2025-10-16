@@ -1,3 +1,19 @@
+## [0.2.0] - 2025-10-16
+
+Breaking changes / deprecations:
+
+- changed `get_posts` API to (optionally) pass a `context` as the second param instead of `current_user`; context includes the user DID as `context.user.raw_did`, and will also include a verified DID in a future version
+- `enable_unsafe_auth` option is deprecated – for now, `get_posts` will still work with `(params, current_user)` if that option is set
+- `validate_responses` option is deprecated – responses are now always validated, also in production
+
+Also:
+
+- `get_posts` response can now return each post either as an AT URI string as before, or as a hash with URI in the `:post` field
+- added support for post reasons (repost, pin) via `:reason` field in the post hash
+- added support for post context info via `:context` field in the post hash and request ID info via `:req_id` in the response hash
+- added `accepts_interactions` property to the feed API which lets it accept user interactions feedback ("show more/less" etc.)
+- added support for accepting interactions sent to `app.bsky.feed.sendInteractions` via `on_interactions` handler
+
 ## [0.1.6] - 2025-07-17
 
 - detect PDS hostname automatically in the `bluesky:publish` Rake task
