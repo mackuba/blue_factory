@@ -1,3 +1,7 @@
+## [0.2.1] - 2025-12-07
+
+- updated gemspec so the gem can be used with Sinatra 4.x
+
 ## [0.2.0] - 2025-10-16
 
 Breaking changes / deprecations:
