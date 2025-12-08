@@ -3,7 +3,7 @@
 A Ruby gem for hosting custom feeds for Bluesky.
 
 > [!NOTE]
-> ATProto Ruby gems collection: [skyfall](https://tangled.org/@mackuba.eu/skyfall) | [blue_factory](https://tangled.org/@mackuba.eu/blue_factory) | [minisky](https://tangled.org/@mackuba.eu/minisky) | [didkit](https://tangled.org/@mackuba.eu/didkit)
+> Part of ATProto Ruby SDK: [ruby.sdk.blue](https://ruby.sdk.blue)
 
 
 ## What does it do
@@ -335,7 +335,7 @@ You also need to republish the feed by running the same task again any time you 
 
 ## Credits
 
-Copyright © 2025 Kuba Suder ([@mackuba.eu](https://bsky.app/profile/mackuba.eu)).
+Copyright © 2025 Kuba Suder ([@mackuba.eu](https://bsky.app/profile/did:plc:oio4hkxaop4ao4wz2pp3f4cr)).
 
 The code is available under the terms of the [zlib license](https://choosealicense.com/licenses/zlib/) (permissive, similar to MIT).
 
