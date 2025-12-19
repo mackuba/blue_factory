@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email = ["jakub.suder@gmail.com"]
 
   spec.summary = "A Ruby gem for hosting custom feeds for Bluesky"
-  spec.homepage = "https://github.com/mackuba/blue_factory"
+  spec.homepage = "https://ruby.sdk.blue"
 
   spec.description = %(
     BlueFactory is a Ruby library which helps you build a web service that hosts custom feeds a.k.a. feed generators
@@ -22,9 +22,9 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 2.6.0"
 
   spec.metadata = {
-    "bug_tracker_uri"   => "https://github.com/mackuba/blue_factory/issues",
-    "changelog_uri"     => "https://github.com/mackuba/blue_factory/blob/master/CHANGELOG.md",
-    "source_code_uri"   => "https://github.com/mackuba/blue_factory",
+    "bug_tracker_uri"   => "https://tangled.org/mackuba.eu/blue_factory/issues",
+    "changelog_uri"     => "https://tangled.org/mackuba.eu/blue_factory/blob/master/CHANGELOG.md",
+    "source_code_uri"   => "https://tangled.org/mackuba.eu/blue_factory",
   }
 
   spec.files = Dir.chdir(__dir__) do
