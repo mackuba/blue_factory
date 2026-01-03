@@ -10,12 +10,14 @@ A Ruby gem for hosting custom feeds for Bluesky.
 
 BlueFactory is a Ruby library which helps you build a web service that hosts custom feeds a.k.a. "[feed generators](https://github.com/bluesky-social/feed-generator)" for the Bluesky social network. It implements a simple HTTP server based on [Sinatra](https://sinatrarb.com) which provides the required endpoints for the feed generator interface. You need to provide the content for the feed by making a query to your preferred local database.
 
-A feed server will usually be run together with a second piece of code that streams posts from the Bluesky "firehose" stream, runs them through some kind of filter and saves some or all of them to the database. To build that part, you can use my other Ruby gem [Skyfall](https://tangled.org/@mackuba.eu/skyfall).
+A feed server will usually be run together with a second piece of code that streams posts from the Bluesky "firehose" stream, runs them through some kind of filter and saves some or all of them to the database. To build that part, you can use my other Ruby gem [Skyfall](https://tangled.org/mackuba.eu/skyfall).
 
 
 ## Installation
 
-Add this to your `Gemfile`:
+BlueFactory should run on any somewhat recent version of Ruby (3.x/4.x), although it's recommended to use one that's still getting maintenance updates, ideally the latest one. In production, it's also recommended to install it with [YJIT support](https://shopify.engineering/ruby-yjit-is-production-ready) and with [jemalloc](https://scalingo.com/blog/improve-ruby-application-memory-jemalloc). A compatible version should be preinstalled on many Linux systems, otherwise you can install one using tools such as [RVM](https://rvm.io), [asdf](https://asdf-vm.com), [ruby-install](https://github.com/postmodern/ruby-install) or [ruby-build](https://github.com/rbenv/ruby-build), or `rpm` or `apt-get` on Linux (see more installation options on [ruby-lang.org](https://www.ruby-lang.org/en/downloads/)).
+
+To use it in your app, add this to your `Gemfile`:
 
     gem 'blue_factory', '~> 0.2'
 
