@@ -33,5 +33,6 @@ Gem::Specification.new do |spec|
 
   spec.require_paths = ["lib"]
 
+  spec.add_dependency 'base64', '~> 0.1'
   spec.add_dependency 'sinatra', '>= 3.0', '< 5.0'
 end
