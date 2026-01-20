@@ -8,6 +8,8 @@ require_relative 'output_generator'
 require_relative 'request_context'
 
 module BlueFactory
+  ##
+  # Sinatra server exposing the feed generator endpoints.
   class Server < Sinatra::Base
     configure do
       disable :static
@@ -17,14 +19,28 @@ module BlueFactory
     end
 
     helpers do
+      ##
+      # Accessor for global configuration.
+      #
+      # @return [Module] BlueFactory configuration module
       def config
         BlueFactory
       end
 
+      ##
+      # Builds an AT Protocol feed URI from a key.
+      #
+      # @param key [String] feed key
+      # @return [String] feed URI
       def feed_uri(key)
         'at://' + config.publisher_did + '/' + FEED_GENERATOR_TYPE + '/' + key
       end
 
+      ##
+      # Serializes a JSON response payload.
+      #
+      # @param data [Hash] response payload
+      # @return [String] JSON string
       def json_response(data)
         content_type :json
         JSON.generate(data)
@@ -32,11 +48,25 @@ module BlueFactory
 
       alias json json_response
 
+      ##
+      # Builds a JSON error response.
+      #
+      # @param name [String] error name
+      # @param message [String] error message
+      # @param status [Integer] HTTP status code
+      # @return [Array<(Integer, String)>] status and JSON body
       def json_error(name, message, status: 400)
         content_type :json
         [status, JSON.generate({ error: name, message: message })]
       end
 
+      ##
+      # Validates and resolves a feed class from an AT URI.
+      #
+      # @param feed_uri [String] AT URI for the feed
+      # @return [Class] feed implementation
+      # @raise [InvalidRequestError] if the URI is invalid
+      # @raise [UnsupportedAlgorithmError] if the feed is not registered
       def get_feed(feed_uri)
         if feed_uri.to_s.empty?
           raise InvalidRequestError, "Error: Params must have the property \"feed\""
