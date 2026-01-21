@@ -63,12 +63,10 @@ module BlueFactory
         get_posts = feed.method(:get_posts)
         args = params.slice(:feed, :cursor, :limit)
 
-        if config.enable_unsafe_auth
-          context = RequestContext.new(request)
-          response = feed.get_posts(args, context.user.raw_did)
-        elsif get_posts.arity == 1
+        case get_posts.arity
+        when 1
           response = feed.get_posts(args)
-        elsif get_posts.arity == 2
+        when 2
           context = RequestContext.new(request)
           response = feed.get_posts(args, context)
         else
