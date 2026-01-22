@@ -3,7 +3,17 @@ require 'net/http'
 require 'uri'
 
 module BlueFactory
+
+  #
+  # @api private
+  # HTTP request helpers.
+  #
+
   module Net
+
+    # @api private
+    # Thrown when a HTTP response is not 200 OK.
+    #
     class ResponseError < StandardError; end
 
     def self.get_request(server, method = nil, params = nil, auth: nil)

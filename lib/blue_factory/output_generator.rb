@@ -1,6 +1,11 @@
 require_relative 'errors'
 
 module BlueFactory
+
+  #
+  # @private
+  #
+
   class OutputGenerator
     AT_URI_REGEXP = %r(^at://did:(plc:[a-z0-9]+|web:[a-z0-9\-]+(\.[a-z0-9\-]+)+)/app\.bsky\.feed\.post/[a-z0-9]+$)
 

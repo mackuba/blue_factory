@@ -8,6 +8,11 @@ require_relative 'output_generator'
 require_relative 'request_context'
 
 module BlueFactory
+
+  #
+  # Sinatra server implementing the required feed generator endpoints.
+  #
+
   class Server < Sinatra::Base
     configure do
       disable :static
@@ -17,6 +22,10 @@ module BlueFactory
     end
 
     helpers do
+      #
+      # @api private
+      #
+
       def config
         BlueFactory
       end
@@ -76,9 +85,9 @@ module BlueFactory
         json = OutputGenerator.new.generate(response)
         return json_response(json)
       rescue InvalidRequestError => e
-        return json_error(e.error_type || "InvalidRequest", e.message)
+        return json_error(e.error_type, e.message)
       rescue AuthorizationError => e
-        return json_error(e.error_type || "AuthenticationRequired", e.message, status: 401)
+        return json_error(e.error_type, e.message, status: 401)
       rescue UnsupportedAlgorithmError => e
         return json_error("UnsupportedAlgorithm", e.message)
       rescue InvalidResponseError => e

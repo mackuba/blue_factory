@@ -1,3 +1,7 @@
 --protected
 --no-private
+--default-return nil
 --markup markdown
+--embed-mixin "BlueFactory::Configurable"
+--embed-mixin "BlueFactory::Feeds"
+--embed-mixin "BlueFactory::Interactions"
