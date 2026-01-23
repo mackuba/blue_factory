@@ -4,8 +4,8 @@ module BlueFactory
 
   #
   # An object which provides some metadata about the `getFeedSkeleton` request being processed.
-  # The context is passed to the `#get_posts` method of the provided feed handler object, if the
-  # method is made to accept two parameters.
+  # The context is passed to the {FeedHandler#get_posts} method of the provided feed handler object,
+  # if the method is made to accept two parameters.
   #
 
   class RequestContext

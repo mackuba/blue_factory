@@ -18,7 +18,8 @@ module BlueFactory
   # on which specific post (post AT URI), but they don't include info in which *feed* it has been
   # triggered. If you have multiple feeds configured and need to know which feed an interaction
   # is from, you need to include either a `context` field (assigned to a specific post) or a
-  # `req_id` field (assigned to the whole request) in the data response returned from `get_posts`.
+  # `req_id` field (assigned to the whole request) in the data response returned from
+  # {FeedHandler#get_posts}.
   #
 
   class Interaction

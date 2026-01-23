@@ -20,8 +20,8 @@ module BlueFactory
     # digits and hyphens.
     #
     # The feed handler is expected to be an object which has a `#get_posts` method which accepts
-    # requests routed from the BlueFactory server and returns post data in a specified format (see
-    # the {file:README.md#the-feed-api README} for details).
+    # requests routed from the BlueFactory server and returns post data in a specified format.
+    # See the abstract {FeedHandler} class for a description of the expected API.
     #
     # @api public
     # @param key [String] the feed rkey
