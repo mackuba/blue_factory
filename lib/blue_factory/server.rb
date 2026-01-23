@@ -10,7 +10,14 @@ require_relative 'request_context'
 module BlueFactory
 
   #
-  # Sinatra server implementing the required feed generator endpoints.
+  # Sinatra server implementing the required feed generator endpoints. Usually you will only
+  # interact with it in order to start the server in a startup script.
+  #
+  # @example Starting locally during development
+  #   BlueFactory::Server.run!
+  #
+  # @example Starting from Rack config `config.ru` in production
+  #   run BlueFactory::Server
   #
 
   class Server < Sinatra::Base
