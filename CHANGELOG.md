@@ -4,12 +4,14 @@
 - added explicit `base64` dependency in gemspec
 - added `MAX_LIMIT` (100) and `DEFAULT_LIMIT` (50) constants
 - removed deprecated options `enable_unsafe_auth` and `validate_responses`
+- fixed `rake:publish` not working with feed `description` is nil (thx @jthigpen)
+- `rake:publish` shows a better error message when `createSession` requires a 2FA token
 - added various additional checks:
-  1. `Server` checks if `BlueFactory.hostname` and `BlueFactory.publisher_did` are set before launching
-  2. `add_feed` checks if the key contains only valid characters
-  3. `add_feed` checks if the feed class has a `#get_posts` method
-  4. `getFeedSkeleton` ensures that the limit param is between 1 and 100 (so you don't need to check that)
-  5. `raw_did` checks if the extracted payload contains an `iss` key
+  * `Server` checks if `BlueFactory.hostname` and `BlueFactory.publisher_did` are set before launching
+  * `add_feed` checks if the key contains only valid characters
+  * `add_feed` checks if the feed class has a `#get_posts` method
+  * `getFeedSkeleton` ensures that the limit param is between 1 and 100 (so you don't need to check that)
+  * `raw_did` checks if the extracted payload contains an `iss` key
 
 ## [0.2.1] - 2025-12-07
 
