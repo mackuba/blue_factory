@@ -12,6 +12,8 @@ module BlueFactory
       target.instance_variable_set('@feeds', {})
     end
 
+    RKEY_REGEXP = /\A[A-Za-z0-9\.\-_:~]+\z/
+
     #
     # Registers a feed handler for a given rkey. The full AT URI of the feed generator, which is
     # listed in `describeFeedGenerator` and expected in the `feed` parameter to `getFeedSkeleton`
@@ -68,10 +70,10 @@ module BlueFactory
     private
 
     def validate_key(key)
-      raise InvalidKeyError, "Key must be a string" unless key.is_a?(String)
+      raise InvalidKeyError, "Key must be a string (got: #{key.inspect})" unless key.is_a?(String)
       raise InvalidKeyError, "Key must not be empty" if key == ''
-      raise InvalidKeyError, "Key must not contain a slash" if key.include?('/')
-      raise InvalidKeyError, "Key must not be longer than 15 characters" if key.length > 15
+      raise InvalidKeyError, "Key must not be longer than 15 characters (got: #{key.inspect})" if key.length > 15
+      raise InvalidKeyError, "Key #{key.inspect} contains invalid characters" if key !~ RKEY_REGEXP
     end
 
     private_class_method :extended
