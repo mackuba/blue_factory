@@ -34,6 +34,8 @@ module BlueFactory
     #
     def add_feed(key, feed_handler)
       validate_key(key)
+      validate_feed(key, feed_handler)
+
       @feeds[key.to_s] = feed_handler
     end
 
@@ -76,6 +78,14 @@ module BlueFactory
       raise ConfigurationError, "Key must not be empty" if key == ''
       raise ConfigurationError, "Key must not be longer than 15 characters (got: #{key.inspect})" if key.length > 15
       raise ConfigurationError, "Key #{key.inspect} contains invalid characters" if key !~ RKEY_REGEXP
+    end
+
+    def validate_feed(key, feed)
+      get_posts = feed.method(:get_posts) rescue nil
+
+      if get_posts.nil?
+        raise InvalidFeedClassError, "The feed object for '#{key}' is missing required method `get_posts`"
+      end
     end
 
     private_class_method :extended
