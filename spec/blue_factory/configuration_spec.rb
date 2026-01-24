@@ -11,6 +11,7 @@ describe BlueFactory do
     if BlueFactory.instance_variable_get("@interactions_handler")
       BlueFactory.remove_instance_variable("@interactions_handler")
     end
+
   end
 
   describe '.set' do
