@@ -19,7 +19,7 @@ describe BlueFactory::Server do
   end
 
   describe 'configuration verification' do
-    it 'raises ConfigurationError when hostname is nil' do
+    it 'should raise ConfigurationError when hostname is nil' do
       BlueFactory.set :hostname, nil
       BlueFactory::Server.class_variable_set(:@@config_checked, false)
 
@@ -27,7 +27,7 @@ describe BlueFactory::Server do
         .to raise_error(BlueFactory::ConfigurationError, /hostname/)
     end
 
-    it 'raises ConfigurationError when publisher_did is nil' do
+    it 'should raise ConfigurationError when publisher_did is nil' do
       BlueFactory.set :publisher_did, nil
       BlueFactory::Server.class_variable_set(:@@config_checked, false)
 
@@ -41,7 +41,7 @@ describe BlueFactory::Server do
     let(:feed_uri) { "at://#{publisher_did}/#{BlueFactory::FEED_GENERATOR_TYPE}/#{feed_key}" }
     let(:valid_post_uri) { 'at://did:plc:abc123def456/app.bsky.feed.post/abc123' }
 
-    it 'returns a valid skeleton response for a one-argument get_posts' do
+    it 'should return a valid skeleton response for a one-argument get_posts' do
       handler = mock('one_arg_handler')
       handler.expects(:call).with do |args|
         args[:feed] == feed_uri &&
@@ -63,16 +63,16 @@ describe BlueFactory::Server do
 
       get '/xrpc/app.bsky.feed.getFeedSkeleton', feed: feed_uri, cursor: 'next', limit: 999
 
-      expect(last_response.status).to eq(200)
-      expect(last_response.headers['Content-Type']).to include('application/json')
-      expect(json_body).to eq(
+      last_response.status.should == 200
+      last_response.headers['Content-Type'].should include('application/json')
+      json_body.should == {
         'feed' => [{ 'post' => valid_post_uri }],
         'cursor' => 'cursor_token',
         'reqId' => 'req_token'
-      )
+      }
     end
 
-    it 'passes a RequestContext to a two-argument get_posts' do
+    it 'should pass a RequestContext to a two-argument get_posts' do
       handler = mock('two_arg_handler')
       handler.expects(:call).with do |args, context|
         args[:feed] == feed_uri && context.is_a?(BlueFactory::RequestContext)
@@ -92,11 +92,11 @@ describe BlueFactory::Server do
 
       get '/xrpc/app.bsky.feed.getFeedSkeleton', feed: feed_uri
 
-      expect(last_response.status).to eq(200)
-      expect(json_body['feed']).to eq([{ 'post' => valid_post_uri }])
+      last_response.status.should == 200
+      json_body['feed'].should == [{ 'post' => valid_post_uri }]
     end
 
-    it 'raises InvalidFeedClassError when get_posts arity is unsupported' do
+    it 'should raise InvalidFeedClassError when get_posts arity is unsupported' do
       feed = Class.new do
         def get_posts; end
       end.new
@@ -107,37 +107,37 @@ describe BlueFactory::Server do
         .to raise_error(BlueFactory::InvalidFeedClassError, /arity 0/)
     end
 
-    it 'returns InvalidRequest when feed is missing' do
+    it 'should return InvalidRequest when feed is missing' do
       get '/xrpc/app.bsky.feed.getFeedSkeleton'
 
-      expect(last_response.status).to eq(400)
-      expect(json_body).to include(
+      last_response.status.should == 400
+      json_body.should include(
         'error' => 'InvalidRequest',
         'message' => 'Error: Params must have the property "feed"'
       )
     end
 
-    it 'returns InvalidRequest when feed is not a valid at-uri' do
+    it 'should return InvalidRequest when feed is not a valid at-uri' do
       get '/xrpc/app.bsky.feed.getFeedSkeleton', feed: 'not-an-at-uri'
 
-      expect(last_response.status).to eq(400)
-      expect(json_body).to include(
+      last_response.status.should == 400
+      json_body.should include(
         'error' => 'InvalidRequest',
         'message' => 'Error: feed must be a valid at-uri'
       )
     end
 
-    it 'returns UnsupportedAlgorithm when the feed is not registered' do
+    it 'should return UnsupportedAlgorithm when the feed is not registered' do
       get '/xrpc/app.bsky.feed.getFeedSkeleton', feed: feed_uri
 
-      expect(last_response.status).to eq(400)
-      expect(json_body).to include(
+      last_response.status.should == 400
+      json_body.should include(
         'error' => 'UnsupportedAlgorithm',
         'message' => 'Unsupported algorithm'
       )
     end
 
-    it 'returns UnsupportedAlgorithm when the URI does not match the registered feed' do
+    it 'should return UnsupportedAlgorithm when the URI does not match the registered feed' do
       feed = Class.new do
         def get_posts(args); end
       end.new
@@ -147,14 +147,14 @@ describe BlueFactory::Server do
       mismatched_uri = "at://did:plc:someoneelse/#{BlueFactory::FEED_GENERATOR_TYPE}/#{feed_key}"
       get '/xrpc/app.bsky.feed.getFeedSkeleton', feed: mismatched_uri
 
-      expect(last_response.status).to eq(400)
-      expect(json_body).to include(
+      last_response.status.should == 400
+      json_body.should include(
         'error' => 'UnsupportedAlgorithm',
         'message' => 'Unsupported algorithm'
       )
     end
 
-    it 'returns Unauthorized when the feed raises AuthorizationError' do
+    it 'should return Unauthorized when the feed raises AuthorizationError' do
       feed = Class.new do
         def get_posts(_args, context)
           context.user.raw_did
@@ -167,14 +167,14 @@ describe BlueFactory::Server do
       header 'Authorization', 'Basic not-a-bearer-token'
       get '/xrpc/app.bsky.feed.getFeedSkeleton', feed: feed_uri
 
-      expect(last_response.status).to eq(401)
-      expect(json_body).to include(
+      last_response.status.should == 401
+      json_body.should include(
         'error' => 'AuthenticationRequired',
         'message' => 'Unsupported authorization method'
       )
     end
 
-    it 'returns a generic InvalidResponse error in non-development environments' do
+    it 'should return a generic InvalidResponse error in non-development environments' do
       handler = mock('invalid_response_handler')
       handler.stubs(:call).returns({ posts: 'not-an-array' })
 
@@ -191,8 +191,8 @@ describe BlueFactory::Server do
 
       get '/xrpc/app.bsky.feed.getFeedSkeleton', feed: feed_uri
 
-      expect(last_response.status).to eq(500)
-      expect(json_body).to include(
+      last_response.status.should == 500
+      json_body.should include(
         'error' => 'InvalidResponse',
         'message' => 'Feed response was invalid'
       )
@@ -200,7 +200,7 @@ describe BlueFactory::Server do
   end
 
   describe 'GET /xrpc/app.bsky.feed.describeFeedGenerator' do
-    it 'returns the service did and configured feed uris' do
+    it 'should return the service did and configured feed uris' do
       feed = Class.new do
         def get_posts(args); end
       end.new
@@ -210,24 +210,24 @@ describe BlueFactory::Server do
 
       get '/xrpc/app.bsky.feed.describeFeedGenerator'
 
-      expect(last_response.status).to eq(200)
-      expect(json_body).to eq(
+      last_response.status.should == 200
+      json_body.should == {
         'did' => "did:web:#{hostname}",
         'feeds' => [
           { 'uri' => "at://#{publisher_did}/#{BlueFactory::FEED_GENERATOR_TYPE}/alpha" },
           { 'uri' => "at://#{publisher_did}/#{BlueFactory::FEED_GENERATOR_TYPE}/beta" }
         ]
-      )
+      }
     end
   end
 
   describe 'GET /.well-known/did.json' do
-    it 'returns the expected DID document' do
+    it 'should return the expected DID document' do
       get '/.well-known/did.json'
 
-      expect(last_response.status).to eq(200)
-      expect(last_response.headers['Content-Type']).to include('application/json')
-      expect(json_body).to eq(
+      last_response.status.should == 200
+      last_response.headers['Content-Type'].should include('application/json')
+      json_body.should == {
         '@context' => ['https://www.w3.org/ns/did/v1'],
         'id' => "did:web:#{hostname}",
         'service' => [
@@ -237,7 +237,7 @@ describe BlueFactory::Server do
             'serviceEndpoint' => "https://#{hostname}"
           }
         ]
-      )
+      }
     end
   end
 
@@ -245,7 +245,7 @@ describe BlueFactory::Server do
     let(:interaction_event) { 'app.bsky.feed.defs#interactionSeen' }
     let(:interaction_item) { 'at://did:plc:abc123def456/app.bsky.feed.post/abc123' }
 
-    it 'calls the configured interactions handler' do
+    it 'should call the configured interactions handler' do
       received_interactions = nil
       received_context = nil
 
@@ -267,19 +267,19 @@ describe BlueFactory::Server do
 
       post '/xrpc/app.bsky.feed.sendInteractions', JSON.generate(payload), 'CONTENT_TYPE' => 'application/json'
 
-      expect(last_response.status).to eq(200)
-      expect(received_context).to be_a(BlueFactory::RequestContext)
-      expect(received_interactions.map(&:type)).to eq([:seen])
-      expect(received_interactions.map(&:item)).to eq([interaction_item])
-      expect(received_interactions.map(&:context)).to eq(['ctx'])
-      expect(received_interactions.map(&:req_id)).to eq(['req-1'])
+      last_response.status.should == 200
+      received_context.should be_a(BlueFactory::RequestContext)
+      received_interactions.map(&:type).should == [:seen]
+      received_interactions.map(&:item).should == [interaction_item]
+      received_interactions.map(&:context).should == ['ctx']
+      received_interactions.map(&:req_id).should == ['req-1']
     end
 
-    it 'returns MethodNotImplemented when no handler is configured' do
+    it 'should return MethodNotImplemented when no handler is configured' do
       post '/xrpc/app.bsky.feed.sendInteractions', JSON.generate(interactions: []), 'CONTENT_TYPE' => 'application/json'
 
-      expect(last_response.status).to eq(501)
-      expect(json_body).to include(
+      last_response.status.should == 501
+      json_body.should include(
         'error' => 'MethodNotImplemented',
         'message' => 'Method Not Implemented'
       )
