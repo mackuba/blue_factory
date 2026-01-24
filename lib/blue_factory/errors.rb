@@ -26,17 +26,10 @@ module BlueFactory
   end
 
   #
-  # Raised when some required configuration is missing.
+  # Raised when some required configuration is missing or invalid.
   #
 
   class ConfigurationError < StandardError
-  end
-
-  #
-  # Raised when configuring the available feeds if a provided feed key is invalid.
-  #
-
-  class InvalidKeyError < StandardError
   end
 
   #

@@ -1,3 +1,5 @@
+require_relative '../errors'
+
 module BlueFactory
 
   #
@@ -28,7 +30,7 @@ module BlueFactory
     # @api public
     # @param key [String] the feed rkey
     # @param feed_handler [#get_posts] feed implementation object
-    # @raise [InvalidKeyError] if the key has invalid format
+    # @raise [ConfigurationError] if the key has invalid format
     #
     def add_feed(key, feed_handler)
       validate_key(key)
@@ -70,10 +72,10 @@ module BlueFactory
     private
 
     def validate_key(key)
-      raise InvalidKeyError, "Key must be a string (got: #{key.inspect})" unless key.is_a?(String)
-      raise InvalidKeyError, "Key must not be empty" if key == ''
-      raise InvalidKeyError, "Key must not be longer than 15 characters (got: #{key.inspect})" if key.length > 15
-      raise InvalidKeyError, "Key #{key.inspect} contains invalid characters" if key !~ RKEY_REGEXP
+      raise ConfigurationError, "Key must be a string (got: #{key.inspect})" unless key.is_a?(String)
+      raise ConfigurationError, "Key must not be empty" if key == ''
+      raise ConfigurationError, "Key must not be longer than 15 characters (got: #{key.inspect})" if key.length > 15
+      raise ConfigurationError, "Key #{key.inspect} contains invalid characters" if key !~ RKEY_REGEXP
     end
 
     private_class_method :extended
