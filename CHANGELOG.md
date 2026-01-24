@@ -9,6 +9,7 @@
   2. `add_feed` checks if the key contains only valid characters
   3. `add_feed` checks if the feed class has a `#get_posts` method
   4. `getFeedSkeleton` ensures that the limit param is between 1 and 100 (so you don't need to check that)
+  5. `raw_did` checks if the extracted payload contains an `iss` key
 
 ## [0.2.1] - 2025-12-07
 

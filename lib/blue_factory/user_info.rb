@@ -56,8 +56,13 @@ module BlueFactory
 
       begin
         payload = JSON.parse(Base64.decode64(parts[1]))
-        payload['iss']
       rescue StandardError => e
+        raise AuthorizationError.new("Invalid JWT format", "BadJwt")
+      end
+
+      if did = payload['iss']
+        did
+      else
         raise AuthorizationError.new("Invalid JWT format", "BadJwt")
       end
     end
