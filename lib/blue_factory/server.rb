@@ -123,11 +123,11 @@ module BlueFactory
       rescue UnsupportedAlgorithmError => e
         return json_error("UnsupportedAlgorithm", e.message)
       rescue InvalidResponseError => e
-        if settings.development?
-          return json_error("InvalidResponse", e.message, status: 500)
-        else
+        if settings.production?
           request.logger&.<< "#{e.class}: #{e.message}\n"
           return json_error("InvalidResponse", "Feed response was invalid", status: 500)
+        else
+          return json_error("InvalidResponse", e.message, status: 500)
         end
       end
     end
