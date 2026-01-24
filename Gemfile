@@ -15,4 +15,6 @@ gem 'rdoc'
 gem 'yard'
 
 gem 'rspec', '~> 3.0'
+gem 'mocha'
 gem 'simplecov'
+gem 'rack-test'
