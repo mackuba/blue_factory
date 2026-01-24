@@ -88,13 +88,21 @@ module BlueFactory
 
         feed
       end
+
+      def validate_limit(args)
+        if args[:limit]
+          args[:limit] = args[:limit].to_i.clamp(1, MAX_LIMIT)
+        end
+      end
     end
 
     get '/xrpc/app.bsky.feed.getFeedSkeleton' do
       begin
         feed = get_feed(params[:feed])
-        get_posts = feed.method(:get_posts)
         args = params.slice(:feed, :cursor, :limit)
+        validate_limit(args)
+
+        get_posts = feed.method(:get_posts)
 
         case get_posts.arity
         when 1

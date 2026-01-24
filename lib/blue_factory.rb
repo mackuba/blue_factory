@@ -27,4 +27,11 @@ module BlueFactory
 
   # The collection NSID of a Bluesky feed generator service.
   FEED_GENERATOR_TYPE = 'app.bsky.feed.generator'
+
+  # Maximum allowed value for the limit parameter in `getFeedSkeleton`.
+  MAX_LIMIT = 100
+
+  # Default value for the limit parameter in `getFeedSkeleton`. This value isn't used by the library
+  # (if no limit parameter is passed, it isn't added), but you can use it as a fallback in your code.
+  DEFAULT_LIMIT = 50
 end
