@@ -76,7 +76,7 @@ module BlueFactory
         end
 
         if feed_uri !~ %r(^at://[\w\-\.\:]+/[\w\.]+/[\w\.\-]+$)
-          raise InvalidRequestError, "Error: feed must be a valid at-uri"
+          raise InvalidRequestError, "Error: feed must be a valid AT URI"
         end
 
         feed_key = feed_uri.split('/').last

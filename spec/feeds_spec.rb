@@ -37,7 +37,9 @@ describe BlueFactory do
         'Llan­fair­pwll­gwyn­gyll­gogery­chwyrn­drob­wlll­lanty­silio­gogo­goch',
         'blue sky',
         'gnu/linux',
-        'ohno!'
+        'ohno!',
+        '🦡',
+        'Łódź',
       ]
 
       bad_keys.each do |key|
