@@ -87,10 +87,19 @@ namespace :bluesky do
     password = STDIN.noecho(&:gets).chomp
     puts
 
-    json = BlueFactory::Net.post_request(pds_host, 'com.atproto.server.createSession', {
-      identifier: publisher_did,
-      password: password
-    })
+    begin
+      json = BlueFactory::Net.post_request(pds_host, 'com.atproto.server.createSession', {
+        identifier: publisher_did,
+        password: password
+      })
+    rescue BlueFactory::Net::ResponseError => e
+      if e.response.code.to_i == 401 && e.response.body.include?('"error":"AuthFactorTokenRequired"')
+        puts "Error: this Rake task doesn't support logging in with 2FA. Please use an app password here if you have 2FA enabled."
+        exit 1
+      else
+        raise
+      end
+    end
 
     access_token = json['accessJwt']
 
@@ -112,7 +121,7 @@ namespace :bluesky do
     record[:contentMode] = feed_content_mode if feed_content_mode
     record[:acceptsInteractions] = true if feed.respond_to?(:accepts_interactions) && feed.accepts_interactions
 
-    json = BlueFactory::Net.post_request(pds_host, 'com.atproto.repo.putRecord', {
+    BlueFactory::Net.post_request(pds_host, 'com.atproto.repo.putRecord', {
       repo: publisher_did,
       collection: BlueFactory::FEED_GENERATOR_TYPE,
       rkey: feed_key,

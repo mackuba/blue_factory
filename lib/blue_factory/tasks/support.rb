@@ -14,7 +14,14 @@ module BlueFactory
     # @api private
     # Thrown when a HTTP response is not 200 OK.
     #
-    class ResponseError < StandardError; end
+    class ResponseError < StandardError
+      attr_reader :response
+
+      def initialize(response, message)
+        @response = response
+        super(message)
+      end
+    end
 
     def self.get_request(server, method = nil, params = nil, auth: nil)
       headers = {}
@@ -27,7 +34,7 @@ module BlueFactory
       end
 
       response = ::Net::HTTP.get_response(url, headers)
-      raise ResponseError, "Invalid response: #{response.code} #{response.body}" if response.code.to_i / 100 != 2
+      raise ResponseError.new(response, "Invalid response: #{response.code} #{response.body}") if response.code.to_i / 100 != 2
 
       JSON.parse(response.body)
     end
@@ -40,7 +47,7 @@ module BlueFactory
       body = data.is_a?(String) ? data : data.to_json
 
       response = ::Net::HTTP.post(URI("#{server}/xrpc/#{method}"), body, headers)
-      raise ResponseError, "Invalid response: #{response.code} #{response.body}" if response.code.to_i / 100 != 2
+      raise ResponseError.new(response, "Invalid response: #{response.code} #{response.body}") if response.code.to_i / 100 != 2
 
       JSON.parse(response.body)
     end
