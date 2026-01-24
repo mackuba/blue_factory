@@ -21,6 +21,23 @@ module BlueFactory
   #
 
   class Server < Sinatra::Base
+
+    # @private
+    @@config_checked = false
+
+    # Run the Sinatra app as a self-hosted server.
+    # See {https://www.rubydoc.info/gems/sinatra/Sinatra/Base#run!-class_method Sinatra::Base.run!}.
+    # @raise [ConfigurationError] if the {BlueFactory.hostname} or {BlueFactory.publisher_did} is not set
+
+    def self.run!(options = {}, &block)
+      verify_config
+      super
+    end
+
+    before do
+      Server.send(:verify_config) unless @@config_checked
+    end
+
     configure do
       disable :static
       enable :quiet
@@ -140,5 +157,23 @@ module BlueFactory
         json_error('MethodNotImplemented', 'Method Not Implemented', status: 501)
       end
     end
+
+
+    private
+
+    def self.verify_config
+      if BlueFactory.hostname.nil?
+        raise ConfigurationError, "The `hostname` property is not set. Set it with: BlueFactory.set(:hostname, 'example.com')"
+      end
+
+      if BlueFactory.publisher_did.nil?
+        raise ConfigurationError,
+          "The `publisher_did` property is not set. Set it with: BlueFactory.set(:publisher_did, 'did:plc:qweqweqwe')"
+      end
+
+      @@config_checked = true
+    end
+
+    private_class_method :verify_config
   end
 end
