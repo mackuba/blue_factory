@@ -104,11 +104,11 @@ namespace :bluesky do
     record = {
       did: BlueFactory.service_did,
       displayName: feed_display_name,
-      description: feed_description,
       createdAt: Time.now.iso8601,
     }
 
     record[:avatar] = avatar_ref if avatar_ref
+    record[:description] = feed_description if feed_description
     record[:contentMode] = feed_content_mode if feed_content_mode
     record[:acceptsInteractions] = true if feed.respond_to?(:accepts_interactions) && feed.accepts_interactions
 
