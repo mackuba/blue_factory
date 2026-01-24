@@ -1,3 +1,15 @@
+## Unreleased
+
+- added YARD documentation
+- added explicit `base64` dependency in gemspec
+- added `MAX_LIMIT` (100) and `DEFAULT_LIMIT` (50) constants
+- removed deprecated options `enable_unsafe_auth` and `validate_responses`
+- added various additional checks:
+  1. `Server` checks if `BlueFactory.hostname` and `BlueFactory.publisher_did` are set before launching
+  2. `add_feed` checks if the key contains only valid characters
+  3. `add_feed` checks if the feed class has a `#get_posts` method
+  4. `getFeedSkeleton` ensures that the limit param is between 1 and 100 (so you don't need to check that)
+
 ## [0.2.1] - 2025-12-07
 
 - updated gemspec so the gem can be used with Sinatra 4.x
