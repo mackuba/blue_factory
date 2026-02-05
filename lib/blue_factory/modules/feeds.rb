@@ -76,7 +76,6 @@ module BlueFactory
     def validate_key(key)
       raise ConfigurationError, "Key must be a string (got: #{key.inspect})" unless key.is_a?(String)
       raise ConfigurationError, "Key must not be empty" if key == ''
-      raise ConfigurationError, "Key must not be longer than 15 characters (got: #{key.inspect})" if key.length > 15
       raise ConfigurationError, "Key #{key.inspect} contains invalid characters" if key !~ RKEY_REGEXP
     end
 

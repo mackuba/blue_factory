@@ -3,6 +3,7 @@
 - added YARD documentation
 - added explicit `base64` dependency in gemspec
 - added `MAX_LIMIT` (100) and `DEFAULT_LIMIT` (50) constants
+- removed the length limit on feed rkeys, since it isn't actually limited to 15
 - removed deprecated options `enable_unsafe_auth` and `validate_responses`
 - fixed `rake:publish` not working with feed `description` is nil (thx @jthigpen)
 - `rake:publish` shows a better error message when `createSession` requires a 2FA token

@@ -34,7 +34,6 @@ describe BlueFactory do
         { blue: true },
         ['a', 'b'],
         '',
-        'Llan­fair­pwll­gwyn­gyll­gogery­chwyrn­drob­wlll­lanty­silio­gogo­goch',
         'blue sky',
         'gnu/linux',
         'ohno!',
@@ -45,6 +44,12 @@ describe BlueFactory do
       bad_keys.each do |key|
         expect { BlueFactory.add_feed(key, TestFeed.new) }.to raise_error(BlueFactory::ConfigurationError)
       end
+    end
+
+    it 'should not raise an error for very long keys' do
+      name = 'Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch'
+
+      expect { BlueFactory.add_feed(name, TestFeed.new) }.to_not raise_error
     end
 
     it "should raise an error when the feed doesn't have a get_posts method" do
