@@ -1,4 +1,4 @@
-## Unreleased
+## [0.3.0] - 2026-02-15
 
 - added YARD documentation
 - added explicit `base64` dependency in gemspec
