@@ -1,6 +1,6 @@
 ## [0.3.0] - 2026-02-15
 
-- added YARD documentation
+- added [YARD documentation](https://rubydoc.info/gems/blue_factory)
 - added explicit `base64` dependency in gemspec
 - added `MAX_LIMIT` (100) and `DEFAULT_LIMIT` (50) constants
 - removed the length limit on feed rkeys, since it isn't actually limited to 15
