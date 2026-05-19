@@ -17,7 +17,7 @@ A feed server will usually be run together with a second piece of code that stre
 
 ## Installation
 
-BlueFactory should run on any somewhat recent version of Ruby (3.x/4.x), although it's recommended to use one that's still getting maintenance updates, ideally the latest one. In production, it's also recommended to install it with [YJIT support](https://shopify.engineering/ruby-yjit-is-production-ready) and with [jemalloc](https://scalingo.com/blog/improve-ruby-application-memory-jemalloc). A compatible version should be preinstalled on many Linux systems, otherwise you can install one using tools such as [RVM](https://rvm.io), [asdf](https://asdf-vm.com), [ruby-install](https://github.com/postmodern/ruby-install) or [ruby-build](https://github.com/rbenv/ruby-build), or `rpm` or `apt-get` on Linux (see more installation options on [ruby-lang.org](https://www.ruby-lang.org/en/downloads/)).
+BlueFactory should run on any somewhat recent version of Ruby (3.x/4.x), although it's recommended to use one that's still getting maintenance updates, i.e. currently 3.3+. In production, it's also recommended to install it with [YJIT support](https://shopify.engineering/ruby-yjit-is-production-ready) and with [jemalloc](https://scalingo.com/blog/improve-ruby-application-memory-jemalloc). A compatible version should be preinstalled on many Linux systems, otherwise you can install one using tools such as [RVM](https://rvm.io), [asdf](https://asdf-vm.com), [ruby-install](https://github.com/postmodern/ruby-install) or [ruby-build](https://github.com/rbenv/ruby-build), or `rpm` or `apt-get` on Linux (see more installation options on [ruby-lang.org](https://www.ruby-lang.org/en/downloads/)).
 
 To use it in your app, add this to your `Gemfile`:
 
