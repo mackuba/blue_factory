@@ -1,5 +1,7 @@
 # BlueFactory 🏭
 
+[![Gem Version](https://badge.fury.io/rb/blue_factory.svg?icon=si%3Arubygems&icon_color=%23ff6251)](https://rubygems.org/gems/blue_factory) [![YARD Docs](http://img.shields.io/badge/yard-docs-blue.svg)](https://rubydoc.info/gems/blue_factory)
+
 A Ruby gem for hosting custom feeds for Bluesky.
 
 > [!NOTE]
