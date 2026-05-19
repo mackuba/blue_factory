@@ -335,6 +335,13 @@ bundle exec rake bluesky:publish KEY=wwdc
 You also need to republish the feed by running the same task again any time you make changes to these properties and you want them to take effect.
 
 
+## Other resources
+
+- [YARD API documentation](https://rubydoc.info/gems/blue_factory) at rubydoc.info
+- [ruby.sdk.blue](https://ruby.sdk.blue)
+- [bluesky-feeds-rb](https://tangled.org/mackuba.eu/bluesky-feeds-rb) – feed generator template project
+
+
 ## Credits
 
 Copyright © 2026 Kuba Suder ([@mackuba.eu](https://bsky.app/profile/did:plc:oio4hkxaop4ao4wz2pp3f4cr)).
