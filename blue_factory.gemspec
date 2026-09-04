@@ -25,6 +25,7 @@ Gem::Specification.new do |spec|
     "bug_tracker_uri"   => "https://tangled.org/mackuba.eu/blue_factory/issues",
     "changelog_uri"     => "https://tangled.org/mackuba.eu/blue_factory/blob/master/CHANGELOG.md",
     "source_code_uri"   => "https://tangled.org/mackuba.eu/blue_factory",
+    "rubygems_mfa_required" => "true"
   }
 
   spec.files = Dir.chdir(__dir__) do
